@@ -1,3 +1,5 @@
+from utilities.drawable import Drawable
+
 class Animation:
 	def __init__(self, sprite_map, animation_length):
 		self.sprite_map = sprite_map
@@ -15,5 +17,8 @@ class Animation:
 	def receive_sprite(self):
         pass
 
-class Sprite:
+class Sprite(Drawable):
     pass
+
+class Map(Drawable):
+	pass
