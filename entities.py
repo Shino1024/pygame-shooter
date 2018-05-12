@@ -1,15 +1,19 @@
 from enum import Enum
+from abc import ABC, abstractmethod
 
 class Entity:
-	pass
+	__ID = ""
 
+	@abstractmethod
+	def set_id(self, ID):
+		self.__ID = ID
 
 class Sentient(Entity):
-	def set_health(self):
-		pass
+	def set_health(self, health):
+		self.__health = health
 
 	def get_health(self):
-		pass
+		return self.__health
 
 	def pass_damage(self):
 		pass
@@ -71,14 +75,54 @@ class InvincibleObject(StillObject):
 	pass
 
 
-class TreasureKind(Enum):
-	pass
-
-
 class Treasure(StillObject):
 	def set_kind(self):
 		pass
 
 	def set_amount(self):
 		pass
+
+class FieldTypes(Enum):
+	DESTRUCTIBLE, \
+	INVINCIBLE, \
+	MONSTER, \
+	AMMO, \
+	WEAPON, \
+	TREASURE, \
+	LEVEL_SETTINGS, \
+	*_ = range(10)
+
+class DestructibleTypes(Enum):
+	BUSH, \
+	BOX, \
+	*_ = range(10)
+
+class InvincibleTypes(Enum):
+	ROCK, \
+	WALL, \
+	*_ = range(10)
+
+class MonsterTypes(Enum):
+	GHOST, \
+	ROBOT, \
+	ZOMBIE, \
+	*_ = range(10)
+
+class AmmoTypes(Enum):
+	WATER, \
+	BOLT, \
+	FIRE, \
+	WIND, \
+	*_ = range(10)
+
+class WeaponTypes(Enum):
+	SHOT, \
+	BOMB, \
+	*_ = range(10)
+
+class TresasureTypes(Enum):
+	POINTS, \
+	TIME, \
+	AMMO, \
+	*_ = range(10)
 

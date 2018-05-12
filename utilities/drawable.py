@@ -1,3 +1,6 @@
-class Drawable:
-    def render(self):
-        pass
+from abc import ABC, abstractmethod
+
+class Drawable(ABC):
+	@abstractmethod
+	def render(self):
+		pass
