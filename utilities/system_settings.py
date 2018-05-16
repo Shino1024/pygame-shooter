@@ -4,7 +4,7 @@ RESOLUTION_X = 640
 RESOLUTION_Y = 640
 
 TILE_SIZE = 20
-MAP_TILES_NUM = 32
+MAP_TILES_NUM = 2
 
 FRAMES_PER_SECOND = 30
 
@@ -15,8 +15,8 @@ SOUNDS_PATH = "assets/sounds"
 SPRITES_PATH = "assets/sprites"
 
 class DifficultyLevels(Enum):
-	EASY,
-	NORMAL,
-	HARD,
-	*_ = range(10)
+	EASY, \
+	NORMAL, \
+	HARD \
+	= range(3)
 

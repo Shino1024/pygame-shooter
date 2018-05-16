@@ -16,11 +16,19 @@ class Transitional(ABC):
 class Animation:
 	__step_length = 0
 	__init_time = 0
+	__movement_speed = 0
+
+	class MovementOrientation(Enum):
+		HORIZONTAL, \
+		VERTICAL \
+		= range(2)
 
 	def __init__(self, sprite_list, step_length):
 		assert step_length > 0
 		self.__sprite_list = sprite_list
 		self.__step_length = step_length
+
+	def move
 
 	def start_animation(self):
 		self.__init_time = pygame.time.get_ticks()
@@ -46,8 +54,18 @@ class MapSprite:
 #
 
 class Map(Drawable):
-	__sprite_matrix = [[None for i in range(system_settings.MAP_TILES_NUM)] for j in range(system_settings.MAP_TILES_NUM)]
-	__sprites = []
+	__sprites = {}
 
-	def update
+	def update_sprite(self, sprite_id):
+		#self.__sprite_matrix[i][j] = sprite
+
+	def move_sprite_x(self, sprite_id, x):
+		self.__sprites[sprite_id].
+
+	def move_sprite_y(self, sprite_id, y):
+		pass
+
+	def render(self, screen):
+		for sprite in self.__sprites:
+			screen.blit(sprite.get_surface(), sprite.get_surface().get_rect())
 

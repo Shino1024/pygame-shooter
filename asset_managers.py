@@ -1,15 +1,20 @@
 class AssetManager:
-    def load_asset(self):
-        pass
+	__assets = {}
+
+    def load_asset(self, asset_name, asset):
+        if asset_name in self.__assets:
+					raise ValueError, "The asset with such name has already been loaded."
+
+				self.__assets[asset_name] = asset
 
 class SoundManager(AssetManager):
-    pass
+	#
 
 class SpriteManager(AssetManager):
-    pass
+	pass
 
 class ShapeManager(AssetManager):
-    pass
+	pass
 
 class LevelManager(AssetManager):
-    pass
+	pass

@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 class Entity:
 	__ID = ""
 
-	@abstractmethod
 	def set_id(self, ID):
 		self.__ID = ID
 
@@ -90,39 +89,39 @@ class FieldTypes(Enum):
 	WEAPON, \
 	TREASURE, \
 	LEVEL_SETTINGS, \
-	*_ = range(10)
+	= range(7)
 
 class DestructibleTypes(Enum):
 	BUSH, \
 	BOX, \
-	*_ = range(10)
+	= range(2)
 
 class InvincibleTypes(Enum):
 	ROCK, \
 	WALL, \
-	*_ = range(10)
+	= range(2)
 
 class MonsterTypes(Enum):
 	GHOST, \
 	ROBOT, \
 	ZOMBIE, \
-	*_ = range(10)
+	= range(3)
 
 class AmmoTypes(Enum):
 	WATER, \
 	BOLT, \
 	FIRE, \
 	WIND, \
-	*_ = range(10)
+	= range(4)
 
 class WeaponTypes(Enum):
 	SHOT, \
 	BOMB, \
-	*_ = range(10)
+	= range(2)
 
-class TresasureTypes(Enum):
+class TreasureTypes(Enum):
 	POINTS, \
 	TIME, \
 	AMMO, \
-	*_ = range(10)
+	= range(3)
 

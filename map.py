@@ -1,9 +1,15 @@
 class MapElement:
-	def __init__(self, obj):
-		self.info = (key: value for key: value in obj.iteritems() if key not in ["x", "y", "field_type"]}
-		self.x = obj.x
-		self.y = obj.y
-		self.field_type = obj.field_type
+	def __init__(self, field_type, x, y, obj):
+		self.field_type = field_type
+		self.x = x
+		self.y = y
+		serf.obj = obj
+
+class LevelSettings:
+	def __init__(self, difficulty, time, points):
+		pass
 
 class Map:
-	map_grid = [[]]
+	def __init__(self):
+		pass
+	#map_grid = [[]]

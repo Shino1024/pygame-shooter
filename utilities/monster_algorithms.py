@@ -1,10 +1,10 @@
 from enum import Enum
 
 class BehaviourTypes(Enum):
-	IDLE,
-	WANDERING,
-	AGGRESSIVE,
-	*_ = range(10)
+	IDLE, \
+	WANDERING, \
+	AGGRESSIVE, \
+	= range(3)
 
 class Algorithm:
 	pass

@@ -3,11 +3,8 @@ import pygame
 from utilities.drawable import Drawable
 
 class Widget(Drawable):
-	def __init__(self, x, y, width, height):
-		self.x = x
-		self.y = y
-		self.width = width
-		self.height = height
+	def __init__(self, rect):
+		self.rect = rect
 
 class Caption(Widget):
 	def set_text(self, text):
