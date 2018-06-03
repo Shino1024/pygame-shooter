@@ -1,6 +1,6 @@
 import pygame
 
-from utilities.drawable import Drawable
+from graphics.drawable import Drawable
 
 class Widget(Drawable):
 	def __init__(self, w, h):

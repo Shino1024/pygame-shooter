@@ -2,9 +2,9 @@ import json
 import os
 
 import utilities.system_settings as system_settings
-from entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, AmmoTypes, WeaponTypes, TreasureTypes
-from utilities.monster_algorithms import BehaviourTypes
-from map import *
+from entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
+from logic.monster_algorithms import BehaviourTypes
+from graphics.map import *
 
 class MapParser:
 	__level_names = []
@@ -76,8 +76,6 @@ class MapParser:
 		if all([data.isdigit() for data in points]) == False:
 			return False
 		"""
-		#points_int = [int(data) for data in points]
-
 		for i in range(len(points) - 1):
 			if points[i] < 1 or points[i - 1] >= points[i] or points[i] > 5000:
 				return False
@@ -89,13 +87,13 @@ class MapParser:
 
 	def __validate_field(self, json_dump):
 		try:
-			field_type = obj["field_type"]
+			field_type = json_dump["field_type"]
 		except KeyError:
 			return False
 
 		try:
-			if int(obj["x"]) < 0 or int(obj["x"]) >= system_settings.TILES_NUM \
-				or int(obj["y"]) < 0 or int(obj["y"]) >= system_settings.TILES_NUM:
+			if int(json_dump["x"]) < 0 or int(json_dump["x"]) >= system_settings.TILES_NUM \
+				or int(json_dump["y"]) < 0 or int(json_dump["y"]) >= system_settings.TILES_NUM:
 				return False
 		except:
 			return False

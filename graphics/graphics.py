@@ -1,19 +1,10 @@
-from abc import ABC, abstractmethod
+from enum import Enum
 import pygame
-import utilities.system_settings
 
-from utilities.drawable import Drawable
-
-class Transitional(ABC):
-	@abstractmethod
-	def fade_in(self, surface):
-		pass
-
-	@abstractmethod
-	def fade_out(self, surface):
-		pass
+from graphics.drawable import Drawable
 
 class Animation:
+
 	__step_length = 0
 	__init_time = 0
 	__movement_speed = 0
