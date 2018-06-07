@@ -1,2 +1,2 @@
-from . import map_parser, system_settings
+from . import system_settings
 

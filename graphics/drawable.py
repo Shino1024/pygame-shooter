@@ -1,18 +1,23 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod, ABCMeta
+#
+#
+# class Transitional:
+#     """
+#         This class allows to m
+#     """
+#
+#     def fade_in(self, surface, time_length):
+#         pass
+#
+#     def fade_out(self, surface, time_length):
+#         pass
 
 
-class Transitional(ABC):
+class Drawable(metaclass=ABCMeta):
+    """
+        All objects of that instance allow to draw anything on provided surface.
+    """
 
-	@abstractmethod
-	def fade_in(self, surface, time_length):
-		pass
-
-	@abstractmethod
-	def fade_out(self, surface, time_length):
-		pass
-
-
-class Drawable(ABC):
-	@abstractmethod
-	def render(self, surface):
-		pass
+    @abstractmethod
+    def render(self, surface):
+        pass

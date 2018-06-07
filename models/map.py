@@ -1,5 +1,6 @@
 from utilities.system_settings import DifficultyLevels
 
+
 class MapElement:
     def __init__(self, field_type, x, y, obj):
         self.__field_type = field_type
@@ -9,11 +10,14 @@ class MapElement:
 
 
 class LevelSettings:
+    """
+        Provides basic level configuration.
+    """
 
-    def __init__(self):
-        self.__difficulty = DifficultyLevels.EASY
-        self.__time = -1
-        self.__points = -1
+    def __init__(self, difficulty, time, points):
+        self.__difficulty = difficulty
+        self.__time = time
+        self.__points = points
 
     def set_all(self, difficulty, time, points):
         self.__difficulty = difficulty
@@ -32,7 +36,7 @@ class LevelSettings:
 
 class Map:
     """
-        #
+        Contains all data associated with the map level.
     """
 
     __map_data = []

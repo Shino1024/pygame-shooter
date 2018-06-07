@@ -1,13 +1,17 @@
 import pygame
 import sys
 
-import utilities.system_settings
+from utilities import system_settings
+
 
 class Window:
+    """
+        A helper class for convenient management of the window container.
+    """
 
-	def start(self, screen):
-		screen = pygame.display.set_mode([system_settings.RESOLUTION_X, system_settings.RESOLUTION_Y])
+    def start(self):
+        return pygame.display.set_mode([system_settings.RESOLUTION_X, system_settings.RESOLUTION_Y])
 
-	def exit(self):
-		pygame.quit()
-		sys.exit(0)
+    def exit(self):
+        pygame.quit()
+        sys.exit(0)

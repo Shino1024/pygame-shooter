@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABCMeta
 from enum import Enum
-from entities import Sides
+
 
 class AvailabilityMap(object):
     """
@@ -10,6 +10,7 @@ class AvailabilityMap(object):
     def __init__(self, in_map):
         self.__availability_map = []
 
+
 class Algorithm(object, metaclass=ABCMeta):
     """
         This class is a base class of all kinds of monster algorithms. It allows to set basic
@@ -17,13 +18,13 @@ class Algorithm(object, metaclass=ABCMeta):
         All behaviours depend solely on the type of subclass.
     """
 
-    __player_x = -1
-    __player_y = -1
-    __monster_x = -1
-    __monster_y = -1
-    __side = Sides.UP
+    __player_x = None
+    __player_y = None
+    __monster_x = None
+    __monster_y = None
+    __side = None
 
-    self.__availability_map = None
+    __availability_map = None
 
     def set_player_position(self, player_x, player_y):
         self.__player_x = player_x
@@ -37,7 +38,7 @@ class Algorithm(object, metaclass=ABCMeta):
 
     @abstractmethod
     def make_move(self):
-        raise NotImplementedError
+        pass
 
 
 class IdleBehaviour(Algorithm):
