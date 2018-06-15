@@ -11,13 +11,10 @@ FRAMES_PER_SECOND = 30
 
 SPRITE_SPEED = 10
 
-TRANSITION_TIME = 1000
+FADE_IN_TIME = 500
+FADE_OUT_TIME = 500
 
 LEVEL_EXTENSION = ".pslvl"
-
-LEVELS_PATH = "assets/levels"
-SOUNDS_PATH = "assets/sounds"
-SPRITES_PATH = "assets/sprites"
 
 
 class DifficultyLevels(Enum):

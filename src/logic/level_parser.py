@@ -1,60 +1,63 @@
 import json
 import os
 
-import utilities.system_settings as system_settings
-from models.entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
-from logic.monster_algorithms import BehaviourTypes
-from models.map import *
+from src import utilities as system_settings
+from src.models.entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
+from src.logic.monster_algorithms import BehaviourTypes
+from src.models.map import *
 
 
-class MapParser:
-    __level_names = []
-
-    __BASE_FIELDS = {
-        "field_type": lambda field_type: self.__in_enum_list(field_type, FieldTypes),
-        "x": lambda x: self.__in_range(x, 32),
-        "y": lambda y: self.__in_range(y, 32),
-    }
-    __DESTRUCTIBLE_FIELDS = {**__BASE_FIELDS,
-                             "hp": lambda hp: self.__in_range(hp, 1 << 8),
-                             "kind": lambda kind: self.__in_enum_list(kind, DestructibleTypes),
-                             }
-    __INVINCIBLE_FIELDS = {**__BASE_FIELDS,
-                           "kind": lambda kind: self.__in_enum_list(kind, InvincibleTypes),
-                           }
-    __MONSTER_FIELDS = {**__BASE_FIELDS,
-                        "hp": lambda hp: self.__in_range(hp, 1 << 8),
-                        "algorithm": lambda algorithm: self.__in_enum_list(algorithm, BehaviourTypes),
-                        "kind": lambda kind: self.__in_enum_list(kind, MonsterTypes),
-                        }
-    __PICK_FIELDS = {**__BASE_FIELDS,
-                     "points": lambda points: self.__in_range(points, 1000),
-                     }
-    __TREASURE_FIELDS = {**__BASE_FIELDS,
-                         "kind": lambda kind: self.__in_enum_list(kind, TreasureTypes),
-                         "amount": lambda amount: self.__in_range(amount, 1000),
-                         }
-
-    __LEVEL_SETTINGS = {
-        "difficulty": lambda difficulty: self.__in_enum_list(difficulty, DifficultyLevels),
-        "points": lambda points: self.__correct_points(points),
-        "time": lambda time: self.__in_range(time, 10),
-    }
-
-    __OBJS = [
-        __DESTRUCTIBLE_FIELDS,
-        __INVINCIBLE_FIELDS,
-        __MONSTER_FIELDS,
-        __PICK_FIELDS,
-        __TREASURE_FIELDS,
-        __LEVEL_SETTINGS
-    ]
+class LevelParser:
+    """
+        Responsible for parsing the map from JSON.
+    """
 
     def __init__(self):
         self.__fetch_level_names()
+        self.__level_names = []
+
+        self.__BASE_FIELDS = {
+            "field_type": lambda field_type: self.__in_enum_list(field_type, FieldTypes),
+            "x": lambda x: self.__in_range(x, 32),
+            "y": lambda y: self.__in_range(y, 32),
+        }
+        self.__DESTRUCTIBLE_FIELDS = {**self.__BASE_FIELDS,
+                                 "hp": lambda hp: self.__in_range(hp, 1 << 8),
+                                 "kind": lambda kind: self.__in_enum_list(kind, DestructibleTypes),
+                                 }
+        self.__INVINCIBLE_FIELDS = {**self.__BASE_FIELDS,
+                               "kind": lambda kind: self.__in_enum_list(kind, InvincibleTypes),
+                               }
+        self.__MONSTER_FIELDS = {**self.__BASE_FIELDS,
+                            "hp": lambda hp: self.__in_range(hp, 1 << 8),
+                            "algorithm": lambda algorithm: self.__in_enum_list(algorithm, BehaviourTypes),
+                            "kind": lambda kind: self.__in_enum_list(kind, MonsterTypes),
+                            }
+        self.__PICK_FIELDS = {**self.__BASE_FIELDS,
+                         "points": lambda points: self.__in_range(points, 1000),
+                         }
+        self.__TREASURE_FIELDS = {**self.__BASE_FIELDS,
+                             "kind": lambda kind: self.__in_enum_list(kind, TreasureTypes),
+                             "amount": lambda amount: self.__in_range(amount, 1000),
+                             }
+
+        self.__LEVEL_SETTINGS = {
+            "difficulty": lambda difficulty: self.__in_enum_list(difficulty, DifficultyLevels),
+            "points": lambda points: self.__correct_points(points),
+            "time": lambda time: self.__in_range(time, 10),
+        }
+
+        self.__OBJS = [
+            self.__DESTRUCTIBLE_FIELDS,
+            self.__INVINCIBLE_FIELDS,
+            self.__MONSTER_FIELDS,
+            self.__PICK_FIELDS,
+            self.__TREASURE_FIELDS,
+            self.__LEVEL_SETTINGS
+        ]
 
     def __fetch_level_names(self):
-        levels_folder_path = os.path.join(os.getcwd(), system_settings.LEVELS_PATH);
+        levels_folder_path = os.path.join(os.getcwd(), system_settings.LEVELS_PATH)
         if os.path.isdir(levels_folder_path) is False:
             raise RuntimeError("The {system_settings.LEVELS_PATH} folder doesn't exist!")
 
@@ -73,10 +76,7 @@ class MapParser:
     def __correct_points(self, points):
         if len(points) != 3:
             return False
-        """
-		if all([data.isdigit() for data in points]) == False:
-			return False
-		"""
+
         for i in range(len(points) - 1):
             if points[i] < 1 or points[i - 1] >= points[i] or points[i] > 5000:
                 return False

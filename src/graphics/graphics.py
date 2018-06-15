@@ -1,8 +1,8 @@
 from enum import Enum
 import pygame
 
-from graphics.drawable import Drawable
-from utilities import system_settings
+from src.graphics import Drawable
+from src.utilities import system_settings
 
 
 class Animation:
@@ -16,8 +16,8 @@ class Animation:
 
     class MovementOrientation(Enum):
         HORIZONTAL, \
-        VERTICAL, \
-        = range(2)
+            VERTICAL, \
+            *_ = range(100)
 
     def __init__(self, sprite_list, step_length):
         assert step_length > 0
@@ -50,8 +50,8 @@ class Sprite(Drawable):
 
     def __init__(self, _w, _h, x, y):
         super().__init__(system_settings.TILE_SIZE, system_settings.TILE_SIZE, x, y)
-        assert x % system_settings.TILE_SIZE
-        assert y % system_settings.TILE_SIZE
+        assert x % system_settings.TILE_SIZE == 0
+        assert y % system_settings.TILE_SIZE == 0
 
     def render(self, surface):
         surface.blit()

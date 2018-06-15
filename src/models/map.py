@@ -1,6 +1,3 @@
-from utilities.system_settings import DifficultyLevels
-
-
 class MapElement:
     def __init__(self, field_type, x, y, obj):
         self.__field_type = field_type

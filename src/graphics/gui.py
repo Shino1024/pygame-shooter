@@ -2,7 +2,9 @@ from abc import abstractmethod
 
 import pygame
 
-from graphics.drawable import Drawable
+from src.graphics import Drawable
+from src.utilities import system_settings
+from src.utilities.asset_manager import AssetManager, AssetTypes
 
 
 class Widget(Drawable):
@@ -10,11 +12,14 @@ class Widget(Drawable):
         Base class for drawable Widgets.
     """
 
-    def __init__(self, w, h, x, y):
-        self.w = w
-        self.h = h
-        self.x = x
-        self.y = y
+    def __init__(self):
+        self.w = 0
+        self.h = 0
+        self.x = 0
+        self.y = 0
+
+    def center(self):
+        self.x = (system_settings.RESOLUTION_X - self.w) / 2.
 
     @abstractmethod
     def handle_event(self, event):
@@ -26,36 +31,33 @@ class Caption(Widget):
         A simple class to draw text.
     """
 
-    def __init__(self, w, h, x, y):
-        super().__init__(w, h, x, y)
+    def __init__(self, text):
+        super().__init__()
 
-        self.__text = None
-        self.__font_name = None
+        self.__text = text
+        self.__bold_style = False
+        self.__font_info = None
         self.__color = None
         self.__font_size = None
 
-    def set_text(self, text):
-        self.__text = text
+    def set_bold_style(self, bold_style):
+        self.__bold_style = bold_style
 
-    def set_font_name(self, font_name):
-        self.__font_name = font_name
+    def set_font_info(self, font_info):
+        self.__font_info = font_info
 
     def set_color(self, color):
         self.__color = color
-
-    def set_font_size(self, font_size):
-        self.__font_size = font_size
-
-    def get_font_size(self):
-        return self.__font_size
 
     def handle_event(self, event):
         pass
 
     def render(self, surface, move_x=0, move_y=0):
-        resulting_font = pygame.font.SysFont(self.__font_name, self.__font_size)
-        text_surface = resulting_font.render(self.__text, True, self.__color)
+        font = AssetManager.get_asset(self.__font_info)
+        font.set_bold(self.__bold_style)
+        text_surface = font.render(self.__text, True, self.__color)
         surface.blit(text_surface, text_surface.get_rect().move(move_x, move_y))
+        font.set_bold(False)
 
 
 class Button(Widget):
@@ -63,18 +65,21 @@ class Button(Widget):
         A clickable button with a caption.
     """
 
-    def __init__(self, w, h, x, y):
-        super().__init__(w, h, x, y)
+    def __init__(self):
+        super().__init__()
 
         self.__is_hovered = False
         self.__is_pressed = False
 
-        self.__caption_text = None
+        self.__caption = None
 
         self.__background_color = None
         self.__border_color = None
         self.__border_width = None
         self.__action = None
+
+        self.__INNER_PADDING = 10
+        self.__BORDER_WIDTH = 10
 
     def set_background_color(self, background_color):
         self.__background_color = background_color
@@ -82,11 +87,20 @@ class Button(Widget):
     def set_border_width(self, border_width):
         self.__border_width = border_width
 
-    def set_caption_text(self, caption_text):
-        self.__caption_text = caption_text
+    def set_caption(self, caption):
+        self.__caption = caption
 
     def set_action(self, action):
         self.__action = action
+
+    def auto_size(self):
+        if self.__caption is None:
+            return
+
+        caption_surface = self.__caption.render()
+        self.w = caption_surface.w + self.__INNER_PADDING + self.__BORDER_WIDTH
+        self.h = caption_surface.h + self.__INNER_PADDING + self.__BORDER_WIDTH
+        del caption_surface
 
     def handle_event(self, event):
         if pygame.mouse.get_pos().x in (self.x, self.x + self.w) \
@@ -123,6 +137,7 @@ class Button(Widget):
         inner_surface = pygame.Surface((inner_w, inner_h))
 
         inner_background_color = pygame.Color()
+        inner_background_color.a = 255
         if self.__is_hovered:
             inner_background_color.r = max(255, self.__background_color.r + 50)
             inner_background_color.g = max(255, self.__background_color.g + 50)
@@ -147,8 +162,8 @@ class Dialog(Widget):
         A combined set of widgets to display a small window.
     """
 
-    def __init__(self, w, h, x, y):
-        super().__init__(w, h, x, y)
+    def __init__(self):
+        super().__init__()
 
         self.__widgets = []
 
