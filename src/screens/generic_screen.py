@@ -2,12 +2,13 @@ from abc import abstractmethod, ABCMeta
 
 import pygame
 
+from graphics.reactable import Reactable
 from src.graphics.drawable import Drawable
 from src.utilities import system_settings
 from src.utilities.asset_manager import AssetManager
 
 
-class GenericScreen(Drawable, metaclass=ABCMeta):
+class GenericScreen(Drawable, Reactable, metaclass=ABCMeta):
     """
         Base class for all screen, allowing to configure, run and exit with data.
     """
@@ -18,33 +19,35 @@ class GenericScreen(Drawable, metaclass=ABCMeta):
         self.is_fading_in = False
         self.is_fading_out = False
 
-        self.__widgets = {}
-        self.__assets = {}
-        self.__data = {}
-        self.__next_screen = None
+        self.widgets = {}
+        self.assets = {}
+        self.data = {}
+        self.next_screen = None
 
         self.__FADING_IN_FRAMES = system_settings.FRAMES_PER_SECOND * system_settings.FADE_IN_TIME
         self.__FADING_OUT_FRAMES = system_settings.FRAMES_PER_SECOND * system_settings.FADE_OUT_TIME
         self.__fading_frames = 0
 
-    def __display_widgets(self, surface):
-        for widget in self.__widgets:
+        self.__INNER_PADDING = 10
+
+    def display_widgets(self, surface):
+        for widget in self.widgets:
             widget.render(surface)
 
     def return_data(self):
-        return self.__data
+        return self.data
 
     def clear_data(self):
-        self.__data = {}
+        self.data = {}
 
     def setup(self, data):
-        self.__data = data
+        self.data = data
 
     def get_next_screen(self):
-        return self.__next_screen
+        return self.next_screen
 
     def render(self, surface):
-        self.__render_screen(surface)
+        self.render_screen(surface)
 
         if self.is_fading_in:
             fading_surface = pygame.Surface(surface.get_size())
@@ -62,20 +65,27 @@ class GenericScreen(Drawable, metaclass=ABCMeta):
             fading_surface.set_alpha(alpha_level)
             surface.blit(fading_surface, (0, 0))
 
-    def __load_assets(self):
-        for asset_info in self.__assets:
+    @abstractmethod
+    def setup_assets(self):
+        pass
+
+    def load_assets(self):
+        for _, asset_info in self.assets.items():
             AssetManager.load_asset(asset_info)
 
+    def handle_event(self, event):
+        for widget in self.widgets:
+            widget.handle_event(event)
+
     @abstractmethod
-    def __render_screen(self, surface):
+    def render_screen(self, surface):
         pass
 
     @abstractmethod
-    def __finalize(self):
+    def finalize(self):
         pass
 
     def __del__(self):
-        del self.__widgets
-        for _, asset_info in self.__assets.items():
+        del self.widgets
+        for _, asset_info in self.assets.items():
             AssetManager.clear_asset(asset_info)
-        self.__finalize()

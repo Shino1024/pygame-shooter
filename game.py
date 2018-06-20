@@ -1,4 +1,4 @@
-from src.logic.logic import *
+from src.logic.logic import ScreenCommander
 
 
 def main():

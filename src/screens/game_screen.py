@@ -6,10 +6,17 @@ class GameScreen(GenericScreen):
         The screen of the actual game.
     """
 
-    def __render_screen(self, surface):
+    def render_screen(self, surface):
         pass
 
-    def __finalize(self):
+    def setup_assets(self):
+        pass
+
+    def __del__(self):
+        self.finalize()
+        super().__del__()
+
+    def finalize(self):
         pass
 
     def load_map(self):

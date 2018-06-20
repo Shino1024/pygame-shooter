@@ -1,10 +1,23 @@
 import json
 import os
 
-from src import utilities as system_settings
-from src.models.entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
-from src.logic.monster_algorithms import BehaviourTypes
-from src.models.map import *
+# from src.models.entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
+# from src.utilities import difficulty_levels
+# from src.models import entities
+# from src.logic import monster_algorithms
+# from . import difficulty_levels
+# # from src.logic.monster_algorithms import BehaviourTypes
+# from src.models import game_map
+# from src.utilities import system_settings, asset_util
+# from src.utilities.system_settings import DifficultyLevels
+# from src.utilities.asset_manager import AssetTypes
+# from src.utilities.asset_manager import AssetTypes
+from logic.difficulty_levels import DifficultyLevels
+from logic.monster_algorithms import BehaviourTypes
+from models.entities import FieldTypes, DestructibleTypes, InvincibleTypes, MonsterTypes, TreasureTypes
+from models.game_map import MapElement, LevelSettings
+from utilities import system_settings
+from utilities.asset_util import AssetTypes
 
 
 class LevelParser:
@@ -12,68 +25,71 @@ class LevelParser:
         Responsible for parsing the map from JSON.
     """
 
-    def __init__(self):
-        self.__fetch_level_names()
-        self.__level_names = []
+    __level_names = []
 
-        self.__BASE_FIELDS = {
-            "field_type": lambda field_type: self.__in_enum_list(field_type, FieldTypes),
-            "x": lambda x: self.__in_range(x, 32),
-            "y": lambda y: self.__in_range(y, 32),
-        }
-        self.__DESTRUCTIBLE_FIELDS = {**self.__BASE_FIELDS,
-                                 "hp": lambda hp: self.__in_range(hp, 1 << 8),
-                                 "kind": lambda kind: self.__in_enum_list(kind, DestructibleTypes),
-                                 }
-        self.__INVINCIBLE_FIELDS = {**self.__BASE_FIELDS,
-                               "kind": lambda kind: self.__in_enum_list(kind, InvincibleTypes),
-                               }
-        self.__MONSTER_FIELDS = {**self.__BASE_FIELDS,
-                            "hp": lambda hp: self.__in_range(hp, 1 << 8),
-                            "algorithm": lambda algorithm: self.__in_enum_list(algorithm, BehaviourTypes),
-                            "kind": lambda kind: self.__in_enum_list(kind, MonsterTypes),
-                            }
-        self.__PICK_FIELDS = {**self.__BASE_FIELDS,
-                         "points": lambda points: self.__in_range(points, 1000),
-                         }
-        self.__TREASURE_FIELDS = {**self.__BASE_FIELDS,
-                             "kind": lambda kind: self.__in_enum_list(kind, TreasureTypes),
-                             "amount": lambda amount: self.__in_range(amount, 1000),
+    __BASE_FIELDS = {
+        "field_type": lambda field_type: LevelParser.in_enum_list(field_type, FieldTypes),
+        "x": lambda x: LevelParser.in_range(x, 32),
+        "y": lambda y: LevelParser.in_range(y, 32),
+    }
+    __DESTRUCTIBLE_FIELDS = {**__BASE_FIELDS,
+                             "hp": lambda hp: LevelParser.in_range(hp, 1 << 8),
+                             "kind": lambda kind: LevelParser.in_enum_list(kind, DestructibleTypes),
                              }
+    __INVINCIBLE_FIELDS = {**__BASE_FIELDS,
+                           "kind": lambda kind: LevelParser.in_enum_list(kind, InvincibleTypes),
+                           }
+    __MONSTER_FIELDS = {**__BASE_FIELDS,
+                        "hp": lambda hp: LevelParser.in_range(hp, 1 << 8),
+                        "algorithm": lambda algorithm: LevelParser.in_enum_list(algorithm, BehaviourTypes),
+                        "kind": lambda kind: LevelParser.in_enum_list(kind, MonsterTypes),
+                        }
+    __PICK_FIELDS = {**__BASE_FIELDS,
+                     "points": lambda points: LevelParser.in_range(points, 1000),
+                     }
+    __TREASURE_FIELDS = {**__BASE_FIELDS,
+                         "kind": lambda kind: LevelParser.in_enum_list(kind, TreasureTypes),
+                         "amount": lambda amount: LevelParser.in_range(amount, 1000),
+                         }
 
-        self.__LEVEL_SETTINGS = {
-            "difficulty": lambda difficulty: self.__in_enum_list(difficulty, DifficultyLevels),
-            "points": lambda points: self.__correct_points(points),
-            "time": lambda time: self.__in_range(time, 10),
-        }
+    __LEVEL_SETTINGS = {
+        "difficulty": lambda difficulty: LevelParser.in_enum_list(difficulty, DifficultyLevels),
+        "points": lambda points: LevelParser.correct_points(points),
+        "time": lambda time: LevelParser.in_range(time, 10),
+    }
 
-        self.__OBJS = [
-            self.__DESTRUCTIBLE_FIELDS,
-            self.__INVINCIBLE_FIELDS,
-            self.__MONSTER_FIELDS,
-            self.__PICK_FIELDS,
-            self.__TREASURE_FIELDS,
-            self.__LEVEL_SETTINGS
-        ]
+    __OBJS = [
+        __DESTRUCTIBLE_FIELDS,
+        __INVINCIBLE_FIELDS,
+        __MONSTER_FIELDS,
+        __PICK_FIELDS,
+        __TREASURE_FIELDS,
+        __LEVEL_SETTINGS
+    ]
 
-    def __fetch_level_names(self):
-        levels_folder_path = os.path.join(os.getcwd(), system_settings.LEVELS_PATH)
-        if os.path.isdir(levels_folder_path) is False:
-            raise RuntimeError("The {system_settings.LEVELS_PATH} folder doesn't exist!")
+    __LEVELS_FOLDER_PATH = os.path.join(system_settings.ASSETS_PATH, AssetTypes.LEVEL.value)
 
-        for filename in os.listdir(levels_folder_path):
-            relative_filename = os.path.join(levels_folder_path, filename)
+    @classmethod
+    def fetch_levels_names(cls):
+        if os.path.isdir(cls.__LEVELS_FOLDER_PATH) is False:
+            raise RuntimeError("")
+
+        for filename in os.listdir(cls.__LEVELS_FOLDER_PATH):
+            relative_filename = os.path.join(cls.__LEVELS_FOLDER_PATH, filename)
             if filename.endswith(system_settings.LEVEL_EXTENSION) \
                     and os.path.isfile(relative_filename):
-                self.__level_names.append(os.path.splitext(filename)[0])
+                cls.__level_names.append(os.path.splitext(filename)[0])
 
-    def get_levels_names(self):
-        return self.__level_names
+    @classmethod
+    def get_levels_names(cls):
+        return cls.__level_names
 
-    def __in_enum_list(self, name, enum):
+    @staticmethod
+    def in_enum_list(name, enum):
         return name.uppercase() in list(map(lambda enum_field: enum_field.name, enum))
 
-    def __correct_points(self, points):
+    @staticmethod
+    def correct_points(points):
         if len(points) != 3:
             return False
 
@@ -83,51 +99,60 @@ class LevelParser:
 
         return True
 
-    def __in_range(self, string, max_range):
+    @staticmethod
+    def in_range(string, max_range):
         return int(string) in range(max_range) if string.isdigit() else False
 
-    def __validate_field(self, json_dump):
-        try:
-            field_type = json_dump["field_type"]
-        except KeyError:
+    @classmethod
+    def validate_field(cls, json_dump):
+        if "field_type" not in json_dump:
             return False
 
         try:
             if int(json_dump["x"]) < 0 or int(json_dump["x"]) >= system_settings.TILES_NUM \
                     or int(json_dump["y"]) < 0 or int(json_dump["y"]) >= system_settings.TILES_NUM:
                 return False
-        except:
+        except (ValueError, KeyError):
             return False
 
         for obj in json_dump:
-            if self.__OBJS[FieldType[key]].keys() != obj.keys(): # TODO: ????????
+            if cls.__OBJS[obj["field_type"]].keys() != obj.keys():  # TODO: ????????
                 return False
 
         return True
 
-    def __json_cast(self, obj):
-        if all(key in obj.keys() for key in self.__BASE_FIELDS):
-            return MapElement(field_type=obj["field_type"], x=obj["x"], y=obj["y"])
-        elif all(key in obj.keys() for key in self.__LEVEL_SETTINGS):
+    @staticmethod
+    def keys_equal(obj0, obj1):
+        return all(key in obj0 for key in obj1)
+
+    @classmethod
+    def json_cast(cls, obj):
+        if LevelParser.keys_equal(obj, cls.__BASE_FIELDS):
+            return MapElement(obj)
+        elif LevelParser.keys_equal(obj, cls.__LEVEL_SETTINGS):
             return LevelSettings(obj)
         else:
             raise ValueError
 
-    def __parse_level(self, level_name):
-        if level_name not in self.__level_names:
+    @classmethod
+    def __parse_level(cls, level_name):
+        if level_name not in cls.__level_names:
             raise ValueError("No level with such name.")
 
-        level_path = os.path.join(os.getcwd(),
-                                  system_settings.LEVELS_PATH + "/" + level_name + system_settings.LEVEL_EXTENSION)
+        level_filename = level_name + system_settings.LEVEL_EXTENSION
+        level_path = os.path.join(cls.__LEVELS_FOLDER_PATH, level_filename)
 
-        json_level = None
-        with open(level_path) as level_file:
-            json_level = json.load(level_file, object_hook=self.__json_cast)
+        try:
+            with open(level_path) as level_file:
+                json_level = json.load(level_file, object_hook=cls.json_cast)
+        except ValueError:
+            return None
 
         return json_level
 
-    def __validate_level(self, json_level):
-        matrix = [[None for x in range(system_settings.MAP_TILES_NUM)] for y in range(system_settings.MAP_TILES_NUM)]
+    @classmethod
+    def __validate_level(cls, json_level):
+        matrix = [[None for _ in range(system_settings.MAP_TILES_NUM)] for _ in range(system_settings.MAP_TILES_NUM)]
         level_settings_present = False
 
         for obj in json_level:
@@ -138,22 +163,26 @@ class LevelParser:
             else:
                 return False
 
-        if level_settings_present == False:
+        if level_settings_present is False:
             return False
 
         for row in matrix:
             for elem in row:
-                if elem == None:
+                if elem is None:
                     return False
 
-                if self.__validate_field(elem) == False:
+                if cls.validate_field(elem) is False:
                     return False
 
         return True
 
-    def generate_map(self, level_name):
-        json_level = self.__parse_level(level_name)
-        if self.__validate_level(json_level):
+    @classmethod
+    def generate_map(cls, level_name):
+        json_level = cls.__parse_level(level_name)
+        if json_level is None:
+            return None
+
+        if cls.__validate_level(json_level):
             return json_level
         else:
             return None

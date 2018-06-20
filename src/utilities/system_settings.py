@@ -1,4 +1,6 @@
-from enum import Enum
+import os
+
+from src.utilities.asset_util import AssetTypes, AssetInfo
 
 RESOLUTION_X = 640
 RESOLUTION_Y = 640
@@ -14,15 +16,12 @@ SPRITE_SPEED = 10
 FADE_IN_TIME = 500
 FADE_OUT_TIME = 500
 
+ASSETS_PATH = os.path.join(os.getcwd(), "assets")
 LEVEL_EXTENSION = ".pslvl"
 
-
-class DifficultyLevels(Enum):
-    """
-        All available levels. They add up to bonuses.
-    """
-
-    EASY, \
-        NORMAL, \
-        HARD, \
-        = range(3)
+fonts = {
+    16: AssetInfo(AssetTypes.FONT, "Default16", "default.ttf"),
+    20: AssetInfo(AssetTypes.FONT, "Default20", "default.ttf"),
+    24: AssetInfo(AssetTypes.FONT, "Default24", "default.ttf"),
+    32: AssetInfo(AssetTypes.FONT, "Default32", "default.ttf"),
+}

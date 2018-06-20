@@ -2,9 +2,11 @@ from abc import abstractmethod
 
 import pygame
 
-from src.graphics import Drawable
+from graphics.reactable import Reactable
+from src.graphics.drawable import Drawable
 from src.utilities import system_settings
-from src.utilities.asset_manager import AssetManager, AssetTypes
+from src.utilities.asset_manager import AssetManager
+from src.graphics.colors import Colors
 
 
 class Widget(Drawable):
@@ -20,10 +22,6 @@ class Widget(Drawable):
 
     def center(self):
         self.x = (system_settings.RESOLUTION_X - self.w) / 2.
-
-    @abstractmethod
-    def handle_event(self, event):
-        pass
 
 
 class Caption(Widget):
@@ -49,9 +47,6 @@ class Caption(Widget):
     def set_color(self, color):
         self.__color = color
 
-    def handle_event(self, event):
-        pass
-
     def render(self, surface, move_x=0, move_y=0):
         font = AssetManager.get_asset(self.__font_info)
         font.set_bold(self.__bold_style)
@@ -60,7 +55,7 @@ class Caption(Widget):
         font.set_bold(False)
 
 
-class Button(Widget):
+class Button(Widget, Reactable):
     """
         A clickable button with a caption.
     """
@@ -74,8 +69,8 @@ class Button(Widget):
         self.__caption = None
 
         self.__background_color = None
-        self.__border_color = None
-        self.__border_width = None
+        self.__border_color = Colors.BLACK
+        self.__border_width = 2
         self.__action = None
 
         self.__INNER_PADDING = 10
@@ -157,7 +152,7 @@ class Button(Widget):
         screen.blit(button_surface, (self.x, self.y))
 
 
-class Dialog(Widget):
+class Dialog(Widget, Reactable):
     """
         A combined set of widgets to display a small window.
     """
@@ -170,7 +165,7 @@ class Dialog(Widget):
         self.__TITLE_BAR_OFFSET = 10
 
         self.__title_caption = None
-        self.__title_bar_color = pygame.Color(64, 64, 64)
+        self.__title_bar_color = Colors.GRAY
 
     def set_title_caption(self, title_caption):
         self.__title_caption = title_caption
@@ -183,7 +178,7 @@ class Dialog(Widget):
 
     def handle_event(self, event):
         for widget in self.__widgets:
-            widget.forward_event(event)
+            widget.handle_event(event)
 
     def render(self, surface):
         dialog_surface = pygame.Surface((self.w, self.h))
