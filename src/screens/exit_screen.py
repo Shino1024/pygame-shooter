@@ -24,6 +24,7 @@ class ExitScreen(GenericScreen):
         if self.__frames_passed == self.__FRAMES_NUM:
             self.has_finished = True
 
+        self.__frames_passed += 1
         coord_x = (system_settings.RESOLUTION_X - AssetManager.get_asset(self.assets["Farewell"]).x) / 2
         coord_y = (system_settings.RESOLUTION_Y - AssetManager.get_asset(self.assets["Farewell"]).y) / 2
         surface.fill(Colors.WHITE)

@@ -24,8 +24,8 @@ class GenericScreen(Drawable, Reactable, metaclass=ABCMeta):
         self.data = {}
         self.next_screen = None
 
-        self.__FADING_IN_FRAMES = system_settings.FRAMES_PER_SECOND * system_settings.FADE_IN_TIME
-        self.__FADING_OUT_FRAMES = system_settings.FRAMES_PER_SECOND * system_settings.FADE_OUT_TIME
+        self.__FADING_IN_FRAMES = system_settings.FADE_IN_TIME / system_settings.FRAMES_PER_SECOND
+        self.__FADING_OUT_FRAMES = system_settings.FADE_OUT_TIME / system_settings.FRAMES_PER_SECOND
         self.__fading_frames = 0
 
         self.__INNER_PADDING = 10
@@ -50,18 +50,22 @@ class GenericScreen(Drawable, Reactable, metaclass=ABCMeta):
         self.render_screen(surface)
 
         if self.is_fading_in:
+            if self.__fading_frames >= self.__FADING_IN_FRAMES:
+                self.is_fading_in = False
             fading_surface = pygame.Surface(surface.get_size())
             fading_surface.blit(surface, (0, 0))
+            self.__fading_frames += 1
             alpha_level = int(255 * float(self.__fading_frames) / float(self.__FADING_IN_FRAMES))
-            self.__fading_frames -= 1
             fading_surface.set_alpha(alpha_level)
             surface.blit(fading_surface, (0, 0))
 
         elif self.is_fading_out:
+            if self.__fading_frames >= self.__FADING_OUT_FRAMES:
+                self.is_fading_out = False
             fading_surface = pygame.Surface(surface.get_size())
             fading_surface.blit(surface, (0, 0))
-            alpha_level = int(255 * (1 - float(self.__fading_frames) / float(self.__FADING_IN_FRAMES)))
-            self.__fading_frames -= 1
+            self.__fading_frames += 1
+            alpha_level = int(255 * (1 - float(self.__fading_frames) / float(self.__FADING_OUT_FRAMES)))
             fading_surface.set_alpha(alpha_level)
             surface.blit(fading_surface, (0, 0))
 
@@ -88,4 +92,6 @@ class GenericScreen(Drawable, Reactable, metaclass=ABCMeta):
     def __del__(self):
         del self.widgets
         for _, asset_info in self.assets.items():
+            print("deleting")
+            print(asset_info.asset_type)
             AssetManager.clear_asset(asset_info)

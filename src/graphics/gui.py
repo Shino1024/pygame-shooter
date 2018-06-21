@@ -38,7 +38,7 @@ class Caption(Widget):
         self.__color = None
         self.__font_size = None
 
-    def set_bold_style(self, bold_style):
+    def set_bold(self, bold_style):
         self.__bold_style = bold_style
 
     def set_font_info(self, font_info):
@@ -53,6 +53,17 @@ class Caption(Widget):
         text_surface = font.render(self.__text, True, self.__color)
         surface.blit(text_surface, text_surface.get_rect().move(move_x, move_y))
         font.set_bold(False)
+
+    def get_rect(self):
+        print("font_info")
+        print(self.__font_info.asset_name)
+        font = AssetManager.get_asset(self.__font_info)
+        print("NNNNNGHHHHHHHHH")
+        print(font)
+        font.set_bold(self.__bold_style)
+        text_surface = font.render(self.__text, True, self.__color)
+        font.set_bold(False)
+        return text_surface.get_rect()
 
 
 class Button(Widget, Reactable):
@@ -69,7 +80,7 @@ class Button(Widget, Reactable):
         self.__caption = None
 
         self.__background_color = None
-        self.__border_color = Colors.BLACK
+        self.__border_color = Colors.BLACK.value
         self.__border_width = 2
         self.__action = None
 
@@ -84,15 +95,21 @@ class Button(Widget, Reactable):
 
     def set_caption(self, caption):
         self.__caption = caption
+        print("SET::::")
+        print(self.__caption)
 
     def set_action(self, action):
         self.__action = action
 
     def auto_size(self):
         if self.__caption is None:
+            print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
             return
 
-        caption_surface = self.__caption.render()
+        print("YAAAAAAAAAAAAAAAAAAAY")
+        print(self.__caption)
+
+        caption_surface = self.__caption.get_rect()
         self.w = caption_surface.w + self.__INNER_PADDING + self.__BORDER_WIDTH
         self.h = caption_surface.h + self.__INNER_PADDING + self.__BORDER_WIDTH
         del caption_surface
@@ -131,21 +148,21 @@ class Button(Widget, Reactable):
         inner_h = self.h - 2 * self.__border_width
         inner_surface = pygame.Surface((inner_w, inner_h))
 
-        inner_background_color = pygame.Color()
-        inner_background_color.a = 255
+        inner_background_color = [0, 0, 0, 0]
+        inner_background_color[3] = 255
         if self.__is_hovered:
-            inner_background_color.r = max(255, self.__background_color.r + 50)
-            inner_background_color.g = max(255, self.__background_color.g + 50)
-            inner_background_color.b = max(255, self.__background_color.b + 50)
+            inner_background_color[0] = max(255, self.__background_color[0] + 50)
+            inner_background_color[1] = max(255, self.__background_color[1] + 50)
+            inner_background_color[2] = max(255, self.__background_color[2] + 50)
         else:
-            inner_background_color.r = max(255, self.__background_color.r + 20)
-            inner_background_color.g = max(255, self.__background_color.g + 20)
-            inner_background_color.b = max(255, self.__background_color.b + 20)
+            inner_background_color[0] = max(255, self.__background_color[0] + 20)
+            inner_background_color[1] = max(255, self.__background_color[1] + 20)
+            inner_background_color[2] = max(255, self.__background_color[2] + 20)
 
-        inner_surface.fill(inner_background_color)
-        self.__caption_text.render(inner_surface,
-                                   move_x=(inner_h - self.__caption_text.get_rect().x) / 2,
-                                   move_y=(inner_w - self.__caption_text.get_rect().y) / 2)
+        inner_surface.fill(tuple(inner_background_color))
+        self.__caption.render(inner_surface,
+                                move_x=(inner_h - self.__caption.get_rect().x) / 2,
+                                move_y=(inner_w - self.__caption.get_rect().y) / 2)
 
         button_surface.blit(inner_surface, (self.__border_width, self.__border_width))
 

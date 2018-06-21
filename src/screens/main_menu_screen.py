@@ -21,60 +21,67 @@ class MainMenuScreen(GenericScreen):
         self.__BUTTONS_OFFSET = 10
 
         self.__SCREEN_TEXT = "Main menu"
-        self.widgets["ScreenText"] = Caption(self.__SCREEN_TEXT)
-        self.widgets["ScreenText"].set_bold()
-        self.widgets["ScreenText"].set_font_size(32)
-        self.widgets["ScreenText"].set_color(Colors.WHITE)
-        self.widgets["ScreenText"].y = 20
-        self.widgets["ScreenText"].center()
+        self.widgets["screen_text"] = Caption(self.__SCREEN_TEXT)
+        self.widgets["screen_text"].set_bold(True)
+        self.widgets["screen_text"].set_color(Colors.WHITE.value)
+        self.widgets["screen_text"].set_font_info(system_settings.fonts[32])
+        self.widgets["screen_text"].y = 20
+        self.widgets["screen_text"].center()
 
         font24 = system_settings.fonts[24]
         font20 = system_settings.fonts[20]
 
-        self.widgets["PlayButton"] = Button()
+        self.widgets["play_button"] = Button()
         play_caption = Caption("Play!")
-        play_caption.set_bold_style(True)
+        play_caption.set_bold(True)
         play_caption.set_font_info(font24)
-        self.widgets["PlayButton"].set_background_color(Colors.LIGHT_YELLOW)
-        self.widgets["PlayButton"].set_caption(play_caption)
-        self.widgets["PlayButton"].auto_size()
-        self.widgets["PlayButton"].center()
-        self.widgets["PlayButton"].y = 60
-        self.widgets["PlayButton"].set_action(self.__handle_play_button)
+        play_caption.set_color(Colors.WHITE.value)
+        self.widgets["play_button"].set_background_color(Colors.LIGHT_YELLOW.value)
+        print(play_caption)
+        self.widgets["play_button"].set_caption(play_caption)
+        self.widgets["play_button"].auto_size()
+        self.widgets["play_button"].center()
+        self.widgets["play_button"].y = 60
+        self.widgets["play_button"].set_action(self.__handle_play_button)
 
-        self.widgets["SettingsButton"] = Button()
+        self.widgets["settings_button"] = Button()
         settings_caption = Caption("Settings!")
+        print("AAAAAAAAAAAA")
+        print(font20)
         settings_caption.set_font_info(font20)
-        self.widgets["SettingsButton"].set_background_color(Colors.LIGHT_BLUE)
-        self.widgets["SettingsButton"].set_caption(settings_caption)
-        self.widgets["SettingsButton"].auto_size()
-        self.widgets["SettingsButton"].center()
-        self.widgets["SettingsButton"].y = self.widgets["PlayButton"].y + self.widgets["PlayButton"].h + self.__BUTTONS_OFFSET
-        self.widgets["SettingsButton"].set_action(self.__handle_settings_button)
+        settings_caption.set_color(Colors.WHITE.value)
+        self.widgets["settings_button"].set_background_color(Colors.LIGHT_BLUE.value)
+        self.widgets["settings_button"].set_caption(settings_caption)
+        self.widgets["settings_button"].auto_size()
+        self.widgets["settings_button"].center()
+        self.widgets["settings_button"].y = self.widgets["play_button"].y + self.widgets["play_button"].h + self.__BUTTONS_OFFSET
+        self.widgets["settings_button"].set_action(self.__handle_settings_button)
 
-        self.widgets["HelpButton"] = Button()
+        self.widgets["help_button"] = Button()
         help_caption = Caption("Manual!")
         help_caption.set_font_info(font20)
-        self.widgets["HelpButton"].set_background_color(Colors.LIGHT_RED)
-        self.widgets["HelpButton"].set_caption(help_caption)
-        self.widgets["HelpButton"].auto_size()
-        self.widgets["HelpButton"].center()
-        self.widgets["HelpButton"].y = self.widgets["SettingsButton"].y + self.widgets["SettingsButton"].h + self.__BUTTONS_OFFSET
-        self.widgets["HelpButton"].set_action(self.__handle_help_button)
+        help_caption.set_color(Colors.WHITE.value)
+        self.widgets["help_button"].set_background_color(Colors.LIGHT_RED.value)
+        self.widgets["help_button"].set_caption(help_caption)
+        self.widgets["help_button"].auto_size()
+        self.widgets["help_button"].center()
+        self.widgets["help_button"].y = self.widgets["settings_button"].y + self.widgets["settings_button"].h + self.__BUTTONS_OFFSET
+        self.widgets["help_button"].set_action(self.__handle_help_button)
 
-        self.widgets["QuitButton"] = Button()
+        self.widgets["quit_button"] = Button()
         quit_caption = Caption("Quit!")
-        help_caption.set_font_info(font20)
-        self.widgets["QuitButton"].set_background_color(Colors.LIGHT_YELLOW)
-        self.widgets["QuitButton"].set_caption(quit_caption)
-        self.widgets["QuitButton"].auto_size()
-        self.widgets["QuitButton"].center()
-        self.widgets["QuitButton"].y = self.widgets["HelpButton"].y + self.widgets["HelpButton"].h + self.__BUTTONS_OFFSET
-        self.widgets["QuitButton"].set_action(self.__handle_quit_button)
+        quit_caption.set_font_info(font20)
+        quit_caption.set_color(Colors.WHITE.value)
+        self.widgets["quit_button"].set_background_color(Colors.LIGHT_YELLOW.value)
+        self.widgets["quit_button"].set_caption(quit_caption)
+        self.widgets["quit_button"].auto_size()
+        self.widgets["quit_button"].center()
+        self.widgets["quit_button"].y = self.widgets["help_button"].y + self.widgets["help_button"].h + self.__BUTTONS_OFFSET
+        self.widgets["quit_button"].set_action(self.__handle_quit_button)
 
     def setup_assets(self):
         self.assets["background_image"] = AssetInfo(AssetTypes.IMAGE, "MMBG", "MMBG.png")
-        self.assets["splash"] = AssetInfo(AssetTypes.IMAGE, "Splash", "splash.png")
+        self.assets["splash"] = AssetInfo(AssetTypes.IMAGE, "splash", "splash.png")
 
     def __handle_play_button(self):
         self.has_advanced = True

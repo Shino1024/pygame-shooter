@@ -5,6 +5,7 @@ from src.screens.exit_screen import ExitScreen
 from src.screens.main_menu_screen import MainMenuScreen
 from src.screens.start_screen import StartScreen
 from src.utilities import system_settings
+from utilities.asset_manager import AssetManager
 
 
 class ScreenCommander:
@@ -23,6 +24,14 @@ class ScreenCommander:
     def setup(cls):
         cls.__prepare_screen(StartScreen)
         Window.start()
+        cls.__setup_base_assets()
+
+    @classmethod
+    def __setup_base_assets(cls):
+        for _, font in system_settings.fonts.items():
+            AssetManager.load_asset(font)
+            print("loaded")
+            print(font)
 
     @classmethod
     def __fade_out(cls):
@@ -41,10 +50,12 @@ class ScreenCommander:
         while True:
             if cls.__current_screen.has_finished:
                 cls.__fade_out()
-                if len(cls.__SCREEN_STACK) == 0:
-                    cls.__current_screen = MainMenuScreen()
-                elif type(cls.__current_screen) == ExitScreen:
+                print("ahem")
+                if type(cls.__current_screen) == ExitScreen:
                     cls.quit()
+                elif len(cls.__SCREEN_STACK) == 0:
+                    print("CREATING FIRST")
+                    cls.__current_screen = MainMenuScreen()
                 else:
                     cls.__current_screen = cls.__SCREEN_STACK.pop()
                 cls.__fade_in()
@@ -63,7 +74,16 @@ class ScreenCommander:
             cls.__update()
 
     @classmethod
+    def __event_passthrough(cls):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                Window.exit()
+            else:
+                cls.__current_screen.handle_event(event)
+
+    @classmethod
     def __update(cls):
+        cls.__event_passthrough()
         cls.__current_screen.render(Window.get_surface())
         Window.update()
         cls.__GAME_CLOCK.tick(system_settings.FRAMES_PER_SECOND)

@@ -13,15 +13,15 @@ FRAMES_PER_SECOND = 30
 
 SPRITE_SPEED = 10
 
-FADE_IN_TIME = 500
-FADE_OUT_TIME = 500
+FADE_IN_TIME = 2
+FADE_OUT_TIME = 2
 
 ASSETS_PATH = os.path.join(os.getcwd(), "assets")
 LEVEL_EXTENSION = ".pslvl"
 
 fonts = {
-    16: AssetInfo(AssetTypes.FONT, "Default16", "default.ttf"),
-    20: AssetInfo(AssetTypes.FONT, "Default20", "default.ttf"),
-    24: AssetInfo(AssetTypes.FONT, "Default24", "default.ttf"),
-    32: AssetInfo(AssetTypes.FONT, "Default32", "default.ttf"),
+    16: AssetInfo(AssetTypes.FONT, "Default/16", "default.ttf"),
+    20: AssetInfo(AssetTypes.FONT, "Default/20", "default.ttf"),
+    24: AssetInfo(AssetTypes.FONT, "Default/24", "default.ttf"),
+    32: AssetInfo(AssetTypes.FONT, "Default/32", "default.ttf")
 }

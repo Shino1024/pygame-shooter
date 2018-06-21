@@ -17,11 +17,7 @@ class AssetInfo:
         A class that represents information for AssetManager about a given asset.
     """
 
-    def __init__(self, asset_type, asset_name):
-        self.asset_type = asset_type
-        self.asset_name = asset_name
-
-    def __init__(self, asset_type, asset_name, asset_src):
+    def __init__(self, asset_type, asset_name, asset_src=None):
         self.asset_type = asset_type
         self.asset_name = asset_name
         self.asset_src = asset_src
